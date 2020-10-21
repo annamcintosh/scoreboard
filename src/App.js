@@ -3,6 +3,7 @@ import {Header} from './Components/Header';
 import {Player} from './Components/Player';
 import {AddPlayerForm} from './Components/AddPlayerForm';
 import './App.css';
+// import {PropTypes} from 'prop-types';
 
 export class App extends Component {
 
@@ -35,7 +36,7 @@ export class App extends Component {
 prevPlayerId = 4;
 
 handleScoreChange = (index, delta) => {
-    this.setState( prevState => ({
+  this.setState( prevState => ({
         score: prevState.players[index].score += delta
     }));
 }
@@ -55,6 +56,15 @@ handleAddPlayer = (name) => {
   });
 }
 
+handleHighScore = () => {
+  const scores = this.state.players.map( p => p.score );
+  const highScore = Math.max(...scores);
+  if (highScore) {
+    return highScore;
+  }
+  return null;
+}
+
   handleRemovePlayer = (id) => {
     this.setState( prevState => {
       return {
@@ -64,9 +74,11 @@ handleAddPlayer = (name) => {
   }
 
   render() {
+    const highScore = this.handleHighScore();
+    
   return (
     <div className="scoreboard">
-      <Header title="Scoreboard" players={ this.state.players } />
+      <Header players={ this.state.players } />
       {this.state.players.map( (player, index) => 
         <Player 
           name={player.name} 
@@ -74,8 +86,10 @@ handleAddPlayer = (name) => {
           id={player.id}
           key={player.id.toString()}
           index={index}
+          highestScore={this.state.highestScore}
           changeScore={this.handleScoreChange}
           removePlayer={this.handleRemovePlayer}
+          handleHighScore={ highScore === player.score }
           />
       )}        
       <AddPlayerForm addPlayer={this.handleAddPlayer}/>
@@ -85,3 +99,6 @@ handleAddPlayer = (name) => {
 }
 
 export default App;
+
+
+//pass highestScore to player.js to evaluate which player's score is highest to pass true/false to crown

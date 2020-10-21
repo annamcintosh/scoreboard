@@ -13,7 +13,7 @@ export class AddPlayerForm extends Component {
     handleSubmit = (e) => {
         e.preventDefault();
         this.props.addPlayer(this.state.value);
-        this.setState({ value: '' })
+        this.setState({ value: ''})
     }
 
     render() {
