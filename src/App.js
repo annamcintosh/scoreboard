@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
+import { Provider } from './Components/Context/Context'
 import {Header} from './Components/Header';
-import {Player} from './Components/Player';
+import {PlayerList} from './Components/PlayerList';
 import {AddPlayerForm} from './Components/AddPlayerForm';
 import './App.css';
 
@@ -31,9 +32,6 @@ export class App extends Component {
     ]
   }
 
-//player id counter
-prevPlayerId = 4;
-
 handleScoreChange = (index, delta) => {
   this.setState( prevState => ({
         score: prevState.players[index].score += delta
@@ -41,6 +39,7 @@ handleScoreChange = (index, delta) => {
 }
 
 handleAddPlayer = (name) => {
+  let prevPlayerId = 4;
   this.setState( prevState => {
     return {
       players: [
@@ -48,14 +47,14 @@ handleAddPlayer = (name) => {
         {
           name,
           score: 0,
-          id: this.prevPlayerId += 1
+          id: prevPlayerId += 1
         }
       ]
    };
   });
 }
 
-handleHighScore = () => {
+getHighScore = () => {
   const scores = this.state.players.map( p => p.score );
   const highScore = Math.max(...scores);
   if (highScore) {
@@ -71,29 +70,25 @@ handleHighScore = () => {
       }
     });
   }
-
   render() {
-    const highScore = this.handleHighScore();
-    
-  return (
-      <div className="scoreboard">
-        <Header players={ this.state.players } />
-        {this.state.players.map( (player, index) => 
-          <Player 
-            name={player.name} 
-            score={player.score}
-            id={player.id}
-            key={player.id.toString()}
-            index={index}
-            changeScore={this.handleScoreChange}
-            removePlayer={this.handleRemovePlayer}
-            handleHighScore={ highScore === player.score }
-            />
-        )}        
-        <AddPlayerForm addPlayer={this.handleAddPlayer}/>
-      </div>
-  );
-}
+    return (
+      <Provider value={{
+        players: this.state.players,
+        actions: {
+          changeScore: this.handleScoreChange,
+          removePlayer: this.handleRemovePlayer,
+          addPlayer: this.handleAddPlayer,
+          getHighScore: this.getHighScore
+        }
+      }}>
+        <div className="scoreboard">
+          <Header />
+          <PlayerList />
+          <AddPlayerForm />
+        </div>
+      </Provider>
+    );
+  }
 }
 
 export default App;

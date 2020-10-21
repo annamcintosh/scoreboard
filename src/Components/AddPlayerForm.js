@@ -1,38 +1,32 @@
-import React, { Component } from 'react'
+import React from 'react';
+import { Consumer } from './Context/Context'
 
-export class AddPlayerForm extends Component {
-
-    state = {
-        value: ""
-    };
-
-    handleValueChange = (e) => {
-        this.setState({ value: e.target.value });
-    }
-
-    handleSubmit = (e) => {
-        e.preventDefault();
-        this.props.addPlayer(this.state.value);
-        this.setState({ value: ''})
-    }
-
-    render() {
-        return (
-            <form onSubmit={this.handleSubmit}>
-                <input
+export const AddPlayerForm = () => {
+        const playerInput = React.createRef();  
+    
+    return (
+        <Consumer>
+        { context => {
+            const handleSubmit = (e) => {
+                e.preventDefault();
+                context.actions.addPlayer(playerInput.current.value);
+                e.currentTarget.reset();
+            }
+            return (
+            <form onSubmit={handleSubmit}>
+                <input 
                     type="text"
-                    value={this.state.value}
-                    onChange={this.handleValueChange}
+                    ref={playerInput}
                     placeholder="Enter a player's name"
                 />
-
                 <input 
                     type="submit"
                     value="Add Player"
                 />
-            </form>
-        );
-    }
+            </form> 
+            )}}
+        </Consumer>
+    );
 }
 
-export default AddPlayerForm
+export default AddPlayerForm;
