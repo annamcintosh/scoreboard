@@ -6,7 +6,7 @@ export const Header = () => {
     return (
         <header>
             <Stats />
-            <h1>Scoreboard App</h1>
+            <h1>Scoreboard</h1>
             <Stopwatch />
         </header>
     );
